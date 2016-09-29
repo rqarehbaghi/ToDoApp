@@ -1,14 +1,10 @@
 package com.qarehbaghi.todoapp;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class EditItemActivity extends AppCompatActivity {
 
@@ -27,8 +23,7 @@ public class EditItemActivity extends AppCompatActivity {
         etItemEditor.setSelection(etItemEditor.getText().length());
     }
 
-    public void saveItem(View view) {
-        //Save the item first
+    public void onSaveItem(View view) {
         Intent data = new Intent();
         data.putExtra("EditedItem", etItemEditor.getText().toString());
         data.putExtra("Position", position);
