@@ -4,20 +4,20 @@ package com.qarehbaghi.todoapp;
  * Created by Reza on 2016-09-26.
  */
 
-public class ToDoItemListView {
+public class ToDoItemListData {
 
     private boolean itemToggled;
     private String text;
-    private int index;
+    private long id;
 
-    public ToDoItemListView() {
+    public ToDoItemListData() {
         super();
     }
 
-    public ToDoItemListView(String text, int index) {
+    public ToDoItemListData(String text, int id) {
         this.itemToggled = false;
         this.text = text;
-        this.index = index;
+        this.id = id;
     }
 
     public boolean isItemToggled() {
@@ -36,11 +36,11 @@ public class ToDoItemListView {
         this.text = text;
     }
 
-    public int getIndex() {
-        return index;
+    public long getId() {
+        return id;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
+    public void setId(long id) {
+        this.id = id;
     }
 }

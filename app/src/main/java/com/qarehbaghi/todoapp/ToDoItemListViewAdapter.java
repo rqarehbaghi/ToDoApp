@@ -16,14 +16,14 @@ import java.util.ArrayList;
  * Created by Reza on 2016-09-26.
  */
 
-public class ToDoItemListViewAdapter extends ArrayAdapter<ToDoItemListView> {
+public class ToDoItemListViewAdapter extends ArrayAdapter<ToDoItemListData> {
 
     private Context context;
     private int resID;
-    private ArrayList<ToDoItemListView> data;
+    private ArrayList<ToDoItemListData> data;
     private boolean selectionModeActive = false;
 
-    public ToDoItemListViewAdapter(Context context, int resource, ArrayList<ToDoItemListView> objects) {
+    public ToDoItemListViewAdapter(Context context, int resource, ArrayList<ToDoItemListData> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resID = resource;
@@ -36,7 +36,7 @@ public class ToDoItemListViewAdapter extends ArrayAdapter<ToDoItemListView> {
         View rowView = convertView;
         CustomHolder holder;
 
-        final ToDoItemListView lvTodoItem = data.get(position);
+        final ToDoItemListData lvTodoItem = data.get(position);
         if(rowView == null) {
             LayoutInflater inflate = ((Activity) context).getLayoutInflater();
             rowView = inflate.inflate(resID, null);

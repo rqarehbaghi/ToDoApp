@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
-    private ArrayList<ToDoItemListView> todoItems;
+    private ArrayList<ToDoItemListData> todoItems;
     private ToDoItemListViewAdapter aTodoAdapter;
     private ListView lvItems;
     private EditText etEditText;
+    private todoDatabase myDb;
+
     private final int EDIT_VIEW_REQUEST_CODE = 1;
 
     @Override
@@ -73,58 +75,29 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == EDIT_VIEW_REQUEST_CODE) {
                 String editedItem = data.getExtras().getString("EditedItem");
                 int position = data.getIntExtra("Position", 0);
-                ToDoItemListView todoItem = todoItems.get(position);
+                ToDoItemListData todoItem = todoItems.get(position);
                 todoItem.setText(editedItem);
+                myDb.updateData(todoItem);
                 Toast.makeText(this, "\"" + editedItem + "\"" + " Saved", Toast.LENGTH_SHORT).show();
             }
 
             aTodoAdapter.notifyDataSetChanged();
-            writeItems();
-        }
-    }
-
-    private void readItems() {
-        File filesDir = getFilesDir();
-        File file = new File(filesDir, "todo.txt");
-        try {
-            if(!file.exists()) {
-                file.createNewFile();
-            }
-            todoItems = new ArrayList<>();
-            int index = 0;
-            for(String itemText : FileUtils.readLines(file)) {
-                todoItems.add(new ToDoItemListView(itemText, index));
-                index++;
-            }
-        } catch (IOException e) {
-        }
-    }
-
-    private void writeItems() {
-        File filesDir = getFilesDir();
-        File file = new File(filesDir, "todo.txt");
-        try {
-            ArrayList<String> itemsTextList = new ArrayList<>();
-            for(ToDoItemListView item : todoItems) {
-                itemsTextList.add(item.getText());
-            }
-            FileUtils.writeLines(file, itemsTextList);
-        } catch (IOException e) {
         }
     }
 
     private void populateArrayItems() {
-        readItems();
+        myDb = new todoDatabase(this);
+        todoItems = myDb.getData();
         aTodoAdapter = new ToDoItemListViewAdapter(this, R.layout.custom_todo_item, todoItems);
     }
 
     public void onAddItem(View view) {
         String enteredText = etEditText.getText().toString().trim();
         if(!enteredText.equals("")) {
-            ToDoItemListView todoItem = new ToDoItemListView(enteredText, todoItems.size());
+            ToDoItemListData todoItem = new ToDoItemListData(enteredText, todoItems.size());
             aTodoAdapter.add(todoItem);
+            myDb.insertData(todoItem);
             etEditText.setText("");
-            writeItems();
         }
     }
 
@@ -133,13 +106,14 @@ public class MainActivity extends AppCompatActivity {
             aTodoAdapter.setSelectionModeActive(true);
         } else {
             int prevSize = todoItems.size();
-            Iterator<ToDoItemListView> todoItemsIterator = todoItems.iterator();
+            Iterator<ToDoItemListData> todoItemsIterator = todoItems.iterator();
             while (todoItemsIterator.hasNext()) {
-                if (todoItemsIterator.next().isItemToggled()) {
+                ToDoItemListData nextItem = todoItemsIterator.next();
+                if (nextItem.isItemToggled()) {
+                    myDb.deleteData(nextItem.getId());
                     todoItemsIterator.remove();
                 }
             }
-            writeItems();
             aTodoAdapter.setSelectionModeActive(false);
             int numItemsDeleted = prevSize - todoItems.size();
             if(numItemsDeleted > 0) {
